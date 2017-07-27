@@ -1,0 +1,17 @@
+FROM node:4
+
+RUN npm install -g node-gyp
+RUN useradd -u 777 -r -m -U app
+RUN mkdir -p /src/app
+WORKDIR /src/app
+COPY . /src/app
+
+RUN npm install && \
+npm run build && \
+npm prune --production
+
+RUN mv /src/app/public/assets /src/app/frontend/
+
+RUN chown -R app:app .
+USER app
+CMD ["npm", "start"]
